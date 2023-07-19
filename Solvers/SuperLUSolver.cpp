@@ -88,7 +88,7 @@ int main()
     fout<< "l1Norm norm: " << l1Norm << endl;
     fout<< "Euclidean norm: " << residualNorm << endl;
     fout<< "infinityNorm norm: " << infinityNorm << endl;
-    fout<<"x1:"<<x<<"\n"<<endl;
+    fout<<"x:"<<x<<"\n"<<endl;
 
     cout<<"SuperLU for ACTIVSg2000 Solving Succeed!"<<endl;
     cout<<"Solving time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
