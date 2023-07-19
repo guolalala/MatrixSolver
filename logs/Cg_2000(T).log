@@ -1,8 +1,10 @@
-SuperLU for ACTIVSg2000 Succeed!
-Compute time: 1 ms
-Solve time: 61245 ms
+#iterations:     92636
+estimated error: 2.20369e-016
+CgSolver for ACTIVSg2000(T) Succeed!
+Compute time: 0 ms
+Solve time: 60031 ms
 
-Total time: 61246 ms
+Total time: 60031 ms
 
 l1Norm norm: 42.0323
 Euclidean norm: 3.77464
