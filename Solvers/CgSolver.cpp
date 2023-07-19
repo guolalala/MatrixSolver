@@ -11,6 +11,8 @@ using namespace Eigen;
 
 int main()
 {
+    //构造稀疏矩阵
+
 
     //数据集
     ifstream fin("../datasets/ACTIVSg2000.mtx");
@@ -19,13 +21,14 @@ int main()
         cout<<"File Read Failed!"<<endl;
         return 1;
     }
-    ofstream fout("../logs/SuperLU_2000.log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
+    ofstream fout("../logs/Cg_2000(T).log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
     if(!fout)
     {
         cout<<"File Open Failed!"<<endl;
         return 1;
     }
 
+    //ifstream fin("D:/ACTIVSg10K/ACTIVSg10K.mtx");
     int M, N, L;
     while (fin.peek() == '%')
         fin.ignore(2048, '\n');
@@ -44,6 +47,7 @@ int main()
 
     A.setFromTriplets(tripletlist.begin(), tripletlist.end());
     A.makeCompressed();
+    A = A.transpose()*A;
 
     //构造右端项
     VectorXd b(M);
@@ -51,42 +55,45 @@ int main()
         b(i) = i + 1;
     }
 
-    
     clock_t  time_stt;
+
     time_stt = clock();
+    ConjugateGradient<SparseMatrix<double>, Lower|Upper>  solver;
 
-    // 创建SuperLU解算器对象并进行分析和因式分解
-	SparseLU<SparseMatrix<double>> solver;
-	solver.analyzePattern(A);
-	solver.factorize(A);
+    //需要设置最大迭代次数，大概在10w左右能迭代出来
+	solver.setMaxIterations(120000);
+	//solver.setTolerance(1e-2);
+    solver.compute(A);
 
-    // 检查分解是否成功
-	if(solver.info()!=Success)
-	{
-		cout<<"Decomposition Failed!"<<endl;
+    if( solver.info()!=Success)
+    {
+        cout<<"Decomposition Failed!"<<endl;
         return 1;
-	}
+    }
     double compute_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
     time_stt = clock();
-
-    // 求解稀疏线性系统
-	VectorXd x = solver.solve(b);
-
-    // 检查求解是否成功
-	if(solver.info()!=Success)
-	{
-		cout<<"Solving Failed!"<<endl;
+    
+    VectorXd x;
+    x= solver.solve(b);
+    fout << "#iterations:     " << solver.iterations() << endl;
+	fout << "estimated error: " << solver.error()      << endl;
+	cout << "#iterations:     " << solver.iterations() << endl;
+	cout << "estimated error: " << solver.error()      << endl;
+    if( solver.info()!=Success)
+    {
+        cout<<"Solving Failed!"<<endl;
         return 1;
-	}
+    }
+
     double solve_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
-    fout<<"SuperLU for ACTIVSg2000 Succeed!"<<endl;
+    fout<<"CgSolver for ACTIVSg2000(T) Succeed!"<<endl;
     fout<<"Compute time: "<<compute_time<<" ms"<<endl;
     fout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
-    //fout<<"Solving time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
+    
 
     // 计算残差向量的范数
-    VectorXd residual = A*x-b;
+    VectorXd residual = ( A*x)-( b);
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();
     double infinityNorm = residual.lpNorm<Eigen::Infinity>();
@@ -96,7 +103,7 @@ int main()
     fout<< "infinityNorm norm: " << infinityNorm << endl;
     fout<<"x:"<<x<<"\n"<<endl;
 
-    cout<<"SuperLU for ACTIVSg2000 Solving Succeed!"<<endl;
+    cout<<"CgSolver for ACTIVSg2000(T) Solving Succeed!"<<endl;
     cout<<"Compute time: "<<compute_time<<" ms"<<endl;
     cout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     cout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
@@ -105,6 +112,5 @@ int main()
     cout<< "infinityNorm norm: " << infinityNorm << endl;
 
     fout.close();
-
     return 0;
 }

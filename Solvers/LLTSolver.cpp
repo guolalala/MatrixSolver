@@ -30,14 +30,13 @@ int main()
         cout<<"File Read Failed!"<<endl;
         return 1;
     }
-    ofstream fout("../logs/test.log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
+    ofstream fout("../logs/LLT_2000(T).log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
     if(!fout)
     {
         cout<<"File Open Failed!"<<endl;
         return 1;
     }
 
-    //ifstream fin("D:/ACTIVSg10K/ACTIVSg10K.mtx");
     int M, N, L;
     while (fin.peek() == '%')
         fin.ignore(2048, '\n');
@@ -56,6 +55,7 @@ int main()
 
     A.setFromTriplets(tripletlist.begin(), tripletlist.end());
     A.makeCompressed();
+    A = A.transpose()*A;
 
     //构造右端项
     VectorXd b(M);
@@ -70,25 +70,33 @@ int main()
     time_stt = clock();
     SimplicialLLT<SparseMatrix<double>> llt;
     //因为llt分解要求A是对称正定的，一般的矩阵不满足这个条件，故构造新的线性方程：(A的转置*A)*x = （A的转置*b），此方程与原方程同解
-    llt.compute(A.transpose()*A);
+    llt.compute( A);
 
     if(llt.info()!=Success)
     {
         cout<<"Decomposition Failed!"<<endl;
         return 1;
     }
+    double compute_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
+    time_stt = clock();
     
     VectorXd x;
-    x=llt.solve(A.transpose()*b);
+    x=llt.solve( b);
     if(llt.info()!=Success)
     {
         cout<<"Solving Failed!"<<endl;
         return 1;
     }
+
+    double solve_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
+    fout<<"SuperLU for ACTIVSg2000(T) Succeed!"<<endl;
+    fout<<"Compute time: "<<compute_time<<" ms"<<endl;
+    fout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
+    fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
     
-    fout<<"Solving time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
+    //fout<<"Solving time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
     // 计算残差向量的范数
-    VectorXd residual = A*x-b;
+    VectorXd residual = ( A*x)-( b);
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();
     double infinityNorm = residual.lpNorm<Eigen::Infinity>();
@@ -96,13 +104,16 @@ int main()
     fout<< "l1Norm norm: " << l1Norm << endl;
     fout<< "Euclidean norm: " << residualNorm << endl;
     fout<< "infinityNorm norm: " << infinityNorm << endl;
+    fout<<"x:"<<x<<"\n"<<endl;
 
-    fout<<"x1:"<<x<<"\n"<<endl;
-    //cout << "x1 finish" << endl;
-    cout<<"Solving Succeed!"<<endl;
+    cout<<"SuperLU for ACTIVSg2000(T) Solving Succeed!"<<endl;
+    cout<<"Compute time: "<<compute_time<<" ms"<<endl;
+    cout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
+    cout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
     cout<< "l1Norm norm: " << l1Norm << endl;
     cout<< "Euclidean norm: " << residualNorm << endl;
     cout<< "infinityNorm norm: " << infinityNorm << endl;
+
 
 
     // //方式2：LDLT分解
