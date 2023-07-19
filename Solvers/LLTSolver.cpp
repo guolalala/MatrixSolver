@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Eigen/Eigen>
+#include <Eigen>
 #include <cmath>
 #include <ctime>
 #include <vector>
@@ -9,7 +9,7 @@
 using namespace std;
 using namespace Eigen;
 
-#define num 20000
+#define num 4000
 
 int main()
 {
@@ -24,12 +24,25 @@ int main()
     }*/
 
     //数据集
-    ifstream fin("D:/ACTIVSg10K/ACTIVSg2000.mtx");
+    ifstream fin("../datasets/ACTIVSg2000.mtx");
+    if(!fin)
+    {
+        cout<<"File Read Failed!"<<endl;
+        return 1;
+    }
+    ofstream fout("../logs/test.log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
+    if(!fout)
+    {
+        cout<<"File Open Failed!"<<endl;
+        return 1;
+    }
+
     //ifstream fin("D:/ACTIVSg10K/ACTIVSg10K.mtx");
     int M, N, L;
     while (fin.peek() == '%')
         fin.ignore(2048, '\n');
     fin >> M >> N >> L;
+    
     SparseMatrix<double> A(M, N);
     A.reserve(L);
     vector<Triplet<double>> tripletlist;
@@ -45,55 +58,83 @@ int main()
     A.makeCompressed();
 
     //构造右端项
-    VectorXd b(num);
-    for(int i = 0; i < num; ++i) {
+    VectorXd b(M);
+    for(int i = 0; i < M; ++i) {
         b(i) = i + 1;
     }
 
-    ofstream fout("D:/result3.txt");
+    
     clock_t  time_stt;
-/*
+
     //方式1：LLT分解
     time_stt = clock();
     SimplicialLLT<SparseMatrix<double>> llt;
     //因为llt分解要求A是对称正定的，一般的矩阵不满足这个条件，故构造新的线性方程：(A的转置*A)*x = （A的转置*b），此方程与原方程同解
     llt.compute(A.transpose()*A);
-    VectorXd x1;
-    x1=llt.solve(A.transpose()*b);
-    fout<<"x1 time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
-    fout<<"x1:"<<x1<<"\n"<<endl;
-    cout << "x1 finish" << endl;
 
-    //方式2：LDLT分解
-    time_stt = clock();
-    SimplicialLDLT<SparseMatrix<double>> ldlt; 
-    ldlt.compute(A.transpose()*A);
-    VectorXd x2;
-    x2=ldlt.solve(A.transpose()*b);
-    fout<<"x2 time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
-    fout<<"x2:"<<x2<<"\n"<<endl;
-    cout << "x2 finish" << endl;
-
-    //方式3：LU分解
-    time_stt = clock();
-    SparseLU<SparseMatrix<double>> lu;
-	lu.compute(A);
-    VectorXd x3;
-    x3=lu.solve(b);
-    fout<<"x3 time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
-    fout<<"x3:"<<x3<<"\n"<<endl;
-    cout << "x3 finish" << endl;
-*/
-    //方式4：QR分解
-    time_stt = clock();
-    SparseQR<SparseMatrix<double>,AMDOrdering<int>> qr;
-	qr.compute(A);
-    VectorXd x4;
-    x4=qr.solve(b);
+    if(llt.info()!=Success)
+    {
+        cout<<"Decomposition Failed!"<<endl;
+        return 1;
+    }
     
-    cout<<"x4:"<<x4<<"\n"<<endl;
-    cout<<"x4 time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
-    cout << "x4 finish" << endl;
+    VectorXd x;
+    x=llt.solve(A.transpose()*b);
+    if(llt.info()!=Success)
+    {
+        cout<<"Solving Failed!"<<endl;
+        return 1;
+    }
+    
+    fout<<"Solving time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
+    // 计算残差向量的范数
+    VectorXd residual = A*x-b;
+    double residualNorm = residual.norm();
+    double l1Norm = residual.lpNorm<1>();
+    double infinityNorm = residual.lpNorm<Eigen::Infinity>();
+
+    fout<< "l1Norm norm: " << l1Norm << endl;
+    fout<< "Euclidean norm: " << residualNorm << endl;
+    fout<< "infinityNorm norm: " << infinityNorm << endl;
+
+    fout<<"x1:"<<x<<"\n"<<endl;
+    //cout << "x1 finish" << endl;
+    cout<<"Solving Succeed!"<<endl;
+    cout<< "l1Norm norm: " << l1Norm << endl;
+    cout<< "Euclidean norm: " << residualNorm << endl;
+    cout<< "infinityNorm norm: " << infinityNorm << endl;
+
+
+    // //方式2：LDLT分解
+    // time_stt = clock();
+    // SimplicialLDLT<SparseMatrix<double>> ldlt; 
+    // ldlt.compute(A.transpose()*A);
+    // VectorXd x2;
+    // x2=ldlt.solve(A.transpose()*b);
+    // fout<<"x2 time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
+    // fout<<"x2:"<<x2<<"\n"<<endl;
+    // cout << "x2 finish" << endl;
+
+    // //方式3：LU分解
+    // time_stt = clock();
+    // SparseLU<SparseMatrix<double>> lu;
+	// lu.compute(A);
+    // VectorXd x3;
+    // x3=lu.solve(b);
+    // fout<<"x3 time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
+    // fout<<"x3:"<<x3<<"\n"<<endl;
+    // cout << "x3 finish" << endl;
+
+    //方式4：QR分解
+    // time_stt = clock();
+    // SparseQR<SparseMatrix<double>,AMDOrdering<int>> qr;
+	// qr.compute(A);
+    // VectorXd x4;
+    // x4=qr.solve(b);
+    
+    // cout<<"x4:"<<x4<<"\n"<<endl;
+    // cout<<"x4 time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
+    // cout << "x4 finish" << endl;
 /*
     //方式5：共轭梯度迭代求解
     time_stt = clock();
@@ -128,6 +169,6 @@ int main()
     fout<<"x7:\n"<<x7<<"\n"<<endl;
 */
     fout.close();
-    cout << "x7 finish" << endl;
+    //cout << "x7 finish" << endl;
     return 0;
 }
