@@ -11,17 +11,17 @@ using namespace Eigen;
 
 int main()
 {
-    //¹¹ÔìÏ¡Êè¾ØÕó
+    //æ„é€ ç¨€ç–çŸ©é˜µ
 
 
-    //Êı¾İ¼¯
+    //æ•°æ®é›†
     ifstream fin("../datasets/ACTIVSg10k.mtx");
     if(!fin)
     {
         cout<<"File Read Failed!"<<endl;
         return 1;
     }
-    ofstream fout("../logs/LSCG_10k.log", ios::out | ios::trunc); //ÔÚÎÄ¼ş²»´æÔÚÊ±´´½¨ĞÂÎÄ¼ş£¬²¢ÔÚÎÄ¼şÒÑ´æÔÚÊ±Çå³ıÔ­ÓĞÊı¾İ²¢Ğ´ÈëĞÂÊı¾İ
+    ofstream fout("../logs/LSCG_10k.log", ios::out | ios::trunc); //åœ¨æ–‡ä»¶ä¸å­˜åœ¨æ—¶åˆ›å»ºæ–°æ–‡ä»¶ï¼Œå¹¶åœ¨æ–‡ä»¶å·²å­˜åœ¨æ—¶æ¸…é™¤åŸæœ‰æ•°æ®å¹¶å†™å…¥æ–°æ•°æ®
     if(!fout)
     {
         cout<<"File Open Failed!"<<endl;
@@ -48,7 +48,7 @@ int main()
     A.setFromTriplets(tripletlist.begin(), tripletlist.end());
     A.makeCompressed();
 
-    //¹¹ÔìÓÒ¶ËÏî
+    //æ„é€ å³ç«¯é¡¹
     VectorXd b(M);
     for(int i = 0; i < M; ++i) {
         b(i) = i + 1;
@@ -59,8 +59,8 @@ int main()
     time_stt = clock();
     LeastSquaresConjugateGradient<SparseMatrix<double>> solver;
 
-    //ĞèÒªÉèÖÃ×î´óµü´ú´ÎÊı£¬´ó¸ÅÔÚ10w×óÓÒÄÜµü´ú³öÀ´
-	solver.setMaxIterations(1200000121221);
+    //éœ€è¦è®¾ç½®æœ€å¤§è¿­ä»£æ¬¡æ•°ï¼Œå¤§æ¦‚åœ¨10wå·¦å³èƒ½è¿­ä»£å‡ºæ¥
+	solver.setMaxIterations(1200000);
 	//solver.setTolerance(1e-2);
     solver.compute(A);
 
@@ -91,7 +91,7 @@ int main()
     fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
     
 
-    // ¼ÆËã²Ğ²îÏòÁ¿µÄ·¶Êı
+    // è®¡ç®—æ®‹å·®å‘é‡çš„èŒƒæ•°
     VectorXd residual = (A*x)-(b);
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();
