@@ -1,12 +1,12 @@
-SuperLU for ACTIVSg2000 Succeed!
-Compute time: 565 ms
-Solve time: 20 ms
+QRSolver for ACTIVSg2000 Succeed!
+Compute time: 1.94548e+06 ms
+Solve time: 952 ms
 
-Total time: 585 ms
+Total time: 1.94644e+06 ms
 
-l1Norm norm: 7.56551e-06
-Euclidean norm: 3.80812e-07
-infinityNorm norm: 1.06375e-07
+l1Norm norm: 0.0002383
+Euclidean norm: 6.13576e-06
+infinityNorm norm: 1.13034e-06
 x: 128446
  126718
  129212

@@ -9,28 +9,19 @@
 using namespace std;
 using namespace Eigen;
 
-#define num 4000
-
 int main()
 {
-    //æ„é€ ç¨€ç–çŸ©é˜µ
+    //¹¹ÔìÏ¡Êè¾ØÕó
 
-    //ç®€å•çŸ©é˜µ
-    /*SparseMatrix<double> A(num,num);
-    vector<Triplet<double>> tripletlist;
-    for(int i = 0; i < num; ++i) {
-        tripletlist.push_back(Triplet<double>(i, i, i*i+1));
-        tripletlist.push_back(Triplet<double>(i, num-1-i, i*(num-1-i)+1));
-    }*/
 
-    //æ•°æ®é›†
+    //Êı¾İ¼¯
     ifstream fin("../datasets/ACTIVSg10k.mtx");
     if(!fin)
     {
         cout<<"File Read Failed!"<<endl;
         return 1;
     }
-    ofstream fout("../logs/LLT_10k(T).log", ios::out | ios::trunc); //åœ¨æ–‡ä»¶ä¸å­˜åœ¨æ—¶åˆ›å»ºæ–°æ–‡ä»¶ï¼Œå¹¶åœ¨æ–‡ä»¶å·²å­˜åœ¨æ—¶æ¸…é™¤åŸæœ‰æ•°æ®å¹¶å†™å…¥æ–°æ•°æ®
+    ofstream fout("../logs/BiCGSTAB_10k.log", ios::out | ios::trunc); //ÔÚÎÄ¼ş²»´æÔÚÊ±´´½¨ĞÂÎÄ¼ş£¬²¢ÔÚÎÄ¼şÒÑ´æÔÚÊ±Çå³ıÔ­ÓĞÊı¾İ²¢Ğ´ÈëĞÂÊı¾İ
     if(!fout)
     {
         cout<<"File Open Failed!"<<endl;
@@ -56,24 +47,23 @@ int main()
     A.setFromTriplets(tripletlist.begin(), tripletlist.end());
     A.makeCompressed();
 
-    //æ„é€ å³ç«¯é¡¹
+    //¹¹ÔìÓÒ¶ËÏî
     VectorXd b(M);
     for(int i = 0; i < M; ++i) {
         b(i) = i + 1;
     }
-    //å› ä¸ºlltåˆ†è§£è¦æ±‚Aæ˜¯å¯¹ç§°æ­£å®šçš„ï¼Œä¸€èˆ¬çš„çŸ©é˜µä¸æ»¡è¶³è¿™ä¸ªæ¡ä»¶ï¼Œæ•…æ„é€ æ–°çš„çº¿æ€§æ–¹ç¨‹ï¼š(Açš„è½¬ç½®*A)*x = ï¼ˆAçš„è½¬ç½®*bï¼‰ï¼Œæ­¤æ–¹ç¨‹ä¸åŸæ–¹ç¨‹åŒè§£
-    b = A.transpose()*b;
-    A = A.transpose()*A;
-    
+
     clock_t  time_stt;
 
-    //LLTåˆ†è§£
     time_stt = clock();
-    SimplicialLLT<SparseMatrix<double>> llt;
+    BiCGSTAB<SparseMatrix<double>> solver;
 
-    llt.compute( A);
+    //ĞèÒªÉèÖÃ×î´óµü´ú´ÎÊı£¬´ó¸ÅÔÚ10w×óÓÒÄÜµü´ú³öÀ´
+	solver.setMaxIterations(120000);
+	//solver.setTolerance(1e-2);
+    solver.compute(A);
 
-    if(llt.info()!=Success)
+    if( solver.info()!=Success)
     {
         cout<<"Decomposition Failed!"<<endl;
         return 1;
@@ -82,22 +72,26 @@ int main()
     time_stt = clock();
     
     VectorXd x;
-    x=llt.solve( b);
-    if(llt.info()!=Success)
+    x= solver.solve(b);
+    fout << "#iterations:     " << solver.iterations() << endl;
+	fout << "estimated error: " << solver.error()      << endl;
+	cout << "#iterations:     " << solver.iterations() << endl;
+	cout << "estimated error: " << solver.error()      << endl;
+    if( solver.info()!=Success)
     {
         cout<<"Solving Failed!"<<endl;
         return 1;
     }
 
     double solve_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
-    fout<<"LLTSolver for ACTIVSg10k(T) Succeed!"<<endl;
+    fout<<"BiCGSTAB for ACTIVSg10k Succeed!"<<endl;
     fout<<"Compute time: "<<compute_time<<" ms"<<endl;
     fout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
     
-    //fout<<"Solving time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
-    // è®¡ç®—æ®‹å·®å‘é‡çš„èŒƒæ•°
-    VectorXd residual = ( A*x)-( b);
+
+    // ¼ÆËã²Ğ²îÏòÁ¿µÄ·¶Êı
+    VectorXd residual = (A*x)-(b);
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();
     double infinityNorm = residual.lpNorm<Eigen::Infinity>();
@@ -107,7 +101,7 @@ int main()
     fout<< "infinityNorm norm: " << infinityNorm << endl;
     fout<<"x:"<<x<<"\n"<<endl;
 
-    cout<<"LLTSolver for ACTIVSg10k(T) Solving Succeed!"<<endl;
+    cout<<"BiCGSTAB for ACTIVSg10k Solving Succeed!"<<endl;
     cout<<"Compute time: "<<compute_time<<" ms"<<endl;
     cout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     cout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;

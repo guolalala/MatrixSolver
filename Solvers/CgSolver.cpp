@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Eigen>
+#include <Eigen/Eigen>
 #include <cmath>
 #include <ctime>
 #include <vector>
@@ -15,20 +15,19 @@ int main()
 
 
     //数据集
-    ifstream fin("../datasets/ACTIVSg2000.mtx");
+    ifstream fin("../datasets/ACTIVSg10k.mtx");
     if(!fin)
     {
         cout<<"File Read Failed!"<<endl;
         return 1;
     }
-    ofstream fout("../logs/Cg_2000(T).log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
+    ofstream fout("../logs/Cg_10k(T).log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
     if(!fout)
     {
         cout<<"File Open Failed!"<<endl;
         return 1;
     }
 
-    //ifstream fin("D:/ACTIVSg10K/ACTIVSg10K.mtx");
     int M, N, L;
     while (fin.peek() == '%')
         fin.ignore(2048, '\n');
@@ -47,13 +46,14 @@ int main()
 
     A.setFromTriplets(tripletlist.begin(), tripletlist.end());
     A.makeCompressed();
-    A = A.transpose()*A;
 
     //构造右端项
     VectorXd b(M);
     for(int i = 0; i < M; ++i) {
         b(i) = i + 1;
     }
+    b = A.transpose()*b;
+    A = A.transpose()*A;
 
     clock_t  time_stt;
 
@@ -61,7 +61,7 @@ int main()
     ConjugateGradient<SparseMatrix<double>, Lower|Upper>  solver;
 
     //需要设置最大迭代次数，大概在10w左右能迭代出来
-	solver.setMaxIterations(120000);
+	solver.setMaxIterations(12000000);
 	//solver.setTolerance(1e-2);
     solver.compute(A);
 
@@ -86,7 +86,7 @@ int main()
     }
 
     double solve_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
-    fout<<"CgSolver for ACTIVSg2000(T) Succeed!"<<endl;
+    fout<<"CgSolver for ACTIVSg10k(T) Succeed!"<<endl;
     fout<<"Compute time: "<<compute_time<<" ms"<<endl;
     fout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
@@ -103,7 +103,7 @@ int main()
     fout<< "infinityNorm norm: " << infinityNorm << endl;
     fout<<"x:"<<x<<"\n"<<endl;
 
-    cout<<"CgSolver for ACTIVSg2000(T) Solving Succeed!"<<endl;
+    cout<<"CgSolver for ACTIVSg10k(T) Solving Succeed!"<<endl;
     cout<<"Compute time: "<<compute_time<<" ms"<<endl;
     cout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     cout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;

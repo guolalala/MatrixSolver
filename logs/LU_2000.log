@@ -1,8 +1,8 @@
-SuperLU for ACTIVSg2000 Succeed!
-Compute time: 565 ms
-Solve time: 20 ms
+LUSolver for ACTIVSg2000 Succeed!
+Compute time: 581 ms
+Solve time: 19 ms
 
-Total time: 585 ms
+Total time: 600 ms
 
 l1Norm norm: 7.56551e-06
 Euclidean norm: 3.80812e-07

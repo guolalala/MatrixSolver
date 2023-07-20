@@ -1,12 +1,14 @@
-SuperLU for ACTIVSg2000 Succeed!
-Compute time: 565 ms
-Solve time: 20 ms
+#iterations:     437
+estimated error: 1.78904e-16
+BiCGSTAB for ACTIVSg2000 Succeed!
+Compute time: 0 ms
+Solve time: 553 ms
 
-Total time: 585 ms
+Total time: 553 ms
 
-l1Norm norm: 7.56551e-06
-Euclidean norm: 3.80812e-07
-infinityNorm norm: 1.06375e-07
+l1Norm norm: 4.70353e-05
+Euclidean norm: 2.17259e-06
+infinityNorm norm: 8.25792e-07
 x: 128446
  126718
  129212
