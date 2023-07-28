@@ -13,9 +13,9 @@ using namespace Eigen;
 
 int main()
 {
-    //构造稀疏矩阵
+    //构��稀疏矩阄1�7
 
-    //简单矩阵
+    //箢�单矩阄1�7
     /*SparseMatrix<double> A(num,num);
     vector<Triplet<double>> tripletlist;
     for(int i = 0; i < num; ++i) {
@@ -23,14 +23,14 @@ int main()
         tripletlist.push_back(Triplet<double>(i, num-1-i, i*(num-1-i)+1));
     }*/
 
-    //数据集
+    //数据雄1�7
     ifstream fin("../datasets/ACTIVSg10k.mtx");
     if(!fin)
     {
         cout<<"File Read Failed!"<<endl;
         return 1;
     }
-    ofstream fout("../logs/LLT_10k(T).log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
+    ofstream fout("../logs/LLT_10k(T).log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数捄1�7
     if(!fout)
     {
         cout<<"File Open Failed!"<<endl;
@@ -56,12 +56,12 @@ int main()
     A.setFromTriplets(tripletlist.begin(), tripletlist.end());
     A.makeCompressed();
 
-    //构造右端项
+    //构��右端项
     VectorXd b(M);
     for(int i = 0; i < M; ++i) {
         b(i) = i + 1;
     }
-    //因为llt分解要求A是对称正定的，一般的矩阵不满足这个条件，故构造新的线性方程：(A的转置*A)*x = （A的转置*b），此方程与原方程同解
+    //因为llt分解要求A是对称正定的，一般的矩阵不满足这个条件，故构造新的线性方程：(A的转罄1�7*A)*x = （A的转罄1�7*b），此方程与原方程同规1�7
     b = A.transpose()*b;
     A = A.transpose()*A;
     
@@ -96,7 +96,7 @@ int main()
     fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
     
     //fout<<"Solving time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
-    // 计算残差向量的范数
+    // 计算残差向量的范敄1�7
     VectorXd residual = ( A*x)-( b);
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();

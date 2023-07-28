@@ -60,7 +60,7 @@ int main()
     LeastSquaresConjugateGradient<SparseMatrix<double>> solver;
 
     //需要设置最大迭代次数，大概在10w左右能迭代出来
-	solver.setMaxIterations(1200000121221);
+	solver.setMaxIterations(1200000);
 	//solver.setTolerance(1e-2);
     solver.compute(A);
 
