@@ -6,98 +6,98 @@
 #include "fstream"
 #include "algorithm"
 
+extern "C" __declspec(dllexport) void LLTSolve(char* A, char* B, char* X);
+
 using namespace std;
 using namespace Eigen;
 
-#define num 4000
-
-int main()
+void LLTSolve(char* A, char* B, char* X)
 {
-    //鏋勯€犵█鐤忕煩闃�
-
-    //绠€鍗曠煩闃�
-    /*SparseMatrix<double> A(num,num);
-    vector<Triplet<double>> tripletlist;
-    for(int i = 0; i < num; ++i) {
-        tripletlist.push_back(Triplet<double>(i, i, i*i+1));
-        tripletlist.push_back(Triplet<double>(i, num-1-i, i*(num-1-i)+1));
-    }*/
-
-    //鏁版嵁闆�
-    ifstream fin("../datasets/ACTIVSg10k.mtx");
-    if(!fin)
+    //read matrix A
+    ifstream ain(A);
+    if(!ain)
     {
-        cout<<"File Read Failed!"<<endl;
-        return 1;
-    }
-    ofstream fout("../logs/LLT_10k(T).log", ios::out | ios::trunc); //鍦ㄦ枃浠朵笉瀛樺湪鏃跺垱寤烘柊鏂囦欢锛屽苟鍦ㄦ枃浠跺凡瀛樺湪鏃舵竻闄ゅ師鏈夋暟鎹苟鍐欏叆鏂版暟鎹�
-    if(!fout)
-    {
-        cout<<"File Open Failed!"<<endl;
-        return 1;
+        cout<<"File A Read Failed!"<<endl;
+        return;
     }
 
     int M, N, L;
-    while (fin.peek() == '%')
-        fin.ignore(2048, '\n');
-    fin >> M >> N >> L;
+    while (ain.peek() == '%')
+        ain.ignore(2048, '\n');
+    ain >> M >> N >> L;
     
-    SparseMatrix<double> A(M, N);
-    A.reserve(L);
+    SparseMatrix<double> a(M, N);
+    a.reserve(L);
     vector<Triplet<double>> tripletlist;
     for (int i = 0; i < L; ++i) {
         int m, n;
         double data;
-        fin >> m >> n >> data;
+        ain >> m >> n >> data;
         tripletlist.push_back(Triplet<double>(m - 1, n - 1, data));// m - 1 and n - 1 to set index start from 0
     }
-    fin.close();
+    ain.close();
 
-    A.setFromTriplets(tripletlist.begin(), tripletlist.end());
-    A.makeCompressed();
+    a.setFromTriplets(tripletlist.begin(), tripletlist.end());
+    a.makeCompressed();
 
-    //鏋勯€犲彸绔」
-    VectorXd b(M);
-    for(int i = 0; i < M; ++i) {
-        b(i) = i + 1;
+    //read matrix B
+    ifstream bin(B);
+    if (!bin)
+    {
+        cout << "File B Read Failed!" << endl;
+        return;
     }
-    //鍥犱负llt鍒嗚В瑕佹眰A鏄绉版瀹氱殑锛屼竴鑸殑鐭╅樀涓嶆弧瓒宠繖涓潯浠讹紝鏁呮瀯閫犳柊鐨勭嚎鎬ф柟绋嬶細(A鐨勮浆缃�*A)*x = 锛圓鐨勮浆缃�*b锛夛紝姝ゆ柟绋嬩笌鍘熸柟绋嬪悓瑙�
-    b = A.transpose()*b;
-    A = A.transpose()*A;
+    while (bin.peek() == '%')
+        bin.ignore(2048, '\n');
+    bin >> M >> N;
+    VectorXd b(M);
+    for (int i = 0; i < M; ++i) {
+        bin >> b(i);
+    }
+    bin.close();
+
+    ofstream fout(X, ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
+    if (!fout)
+    {
+        cout << "File X Open Failed!" << endl;
+        return;
+    }
+
+    b = a.transpose()*b;
+    a = a.transpose()*a;
     
     clock_t  time_stt;
 
     //LLT鍒嗚В
     time_stt = clock();
-    SimplicialLLT<SparseMatrix<double>> llt;
+    SimplicialLLT<SparseMatrix<double>> solver;
 
-    llt.compute( A);
+    solver.compute(a);
 
-    if(llt.info()!=Success)
+    if(solver.info()!=Success)
     {
         cout<<"Decomposition Failed!"<<endl;
-        return 1;
+        return;
     }
     double compute_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
     time_stt = clock();
     
     VectorXd x;
-    x=llt.solve( b);
-    if(llt.info()!=Success)
+    x=solver.solve(b);
+    if(solver.info()!=Success)
     {
         cout<<"Solving Failed!"<<endl;
-        return 1;
+        return;
     }
 
     double solve_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
-    fout<<"LLTSolver for ACTIVSg10k(T) Succeed!"<<endl;
+    fout<<"LLTSolver for " << A << " and " << B << " Solving Succeed!"<<endl;
     fout<<"Compute time: "<<compute_time<<" ms"<<endl;
     fout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
     
-    //fout<<"Solving time is:"<<1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC<<"ms"<<endl;
-    // 璁＄畻娈嬪樊鍚戦噺鐨勮寖鏁�
-    VectorXd residual = ( A*x)-( b);
+    // 计算残差向量的范数
+    VectorXd residual = (a*x)-( b);
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();
     double infinityNorm = residual.lpNorm<Eigen::Infinity>();
@@ -107,7 +107,7 @@ int main()
     fout<< "infinityNorm norm: " << infinityNorm << endl;
     fout<<"x:"<<x<<"\n"<<endl;
 
-    cout<<"LLTSolver for ACTIVSg10k(T) Solving Succeed!"<<endl;
+    cout<<"LLTSolver for " << A << " and " << B << " Solving Succeed!"<<endl;
     cout<<"Compute time: "<<compute_time<<" ms"<<endl;
     cout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     cout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
@@ -116,5 +116,5 @@ int main()
     cout<< "infinityNorm norm: " << infinityNorm << endl;
 
     fout.close();
-    return 0;
+    return;
 }

@@ -9,7 +9,7 @@
 using namespace std;
 using namespace Eigen;
 
-int main()
+int SU()
 {
 
     //数据集

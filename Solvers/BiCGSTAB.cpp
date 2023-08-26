@@ -6,51 +6,61 @@
 #include "fstream"
 #include "algorithm"
 
+extern "C" __declspec(dllexport) void BICGSolve(char* A, char* B, char* X);
+
 using namespace std;
 using namespace Eigen;
 
-int main()
+void BICGSolve(char* A, char* B, char* X)
 {
-    //构造稀疏矩阵
-
-
-    //数据集
-    ifstream fin("../datasets/ACTIVSg10k.mtx");
-    if(!fin)
+    //read matrix A
+    ifstream ain(A);
+    if(!ain)
     {
-        cout<<"File Read Failed!"<<endl;
-        return 1;
+        cout<<"File A Read Failed!"<<endl;
+        return;
     }
-    ofstream fout("../logs/BiCGSTAB_10k.log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
-    if(!fout)
-    {
-        cout<<"File Open Failed!"<<endl;
-        return 1;
-    }
-
     int M, N, L;
-    while (fin.peek() == '%')
-        fin.ignore(2048, '\n');
-    fin >> M >> N >> L;
+    while (ain.peek() == '%')
+        ain.ignore(2048, '\n');
+    ain >> M >> N >> L;
     
-    SparseMatrix<double> A(M, N);
-    A.reserve(L);
+    SparseMatrix<double> a(M, N);
+    a.reserve(L);
     vector<Triplet<double>> tripletlist;
     for (int i = 0; i < L; ++i) {
         int m, n;
         double data;
-        fin >> m >> n >> data;
+        ain >> m >> n >> data;
         tripletlist.push_back(Triplet<double>(m - 1, n - 1, data));// m - 1 and n - 1 to set index start from 0
     }
-    fin.close();
+    ain.close();
 
-    A.setFromTriplets(tripletlist.begin(), tripletlist.end());
-    A.makeCompressed();
+    a.setFromTriplets(tripletlist.begin(), tripletlist.end());
+    a.makeCompressed();
 
-    //构造右端项
+    //read matrix B
+    ifstream bin(B);
+    if (!bin)
+    {
+        cout << "File B Read Failed!" << endl;
+        return;
+    }
+    while (bin.peek() == '%')
+        bin.ignore(2048, '\n');
+    bin >> M >> N;
+
     VectorXd b(M);
-    for(int i = 0; i < M; ++i) {
-        b(i) = i + 1;
+    for (int i = 0; i < M; ++i) {
+        bin >> b(i);
+    }
+    bin.close();
+
+    ofstream fout(X, ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
+    if (!fout)
+    {
+        cout << "File X Open Failed!" << endl;
+        return;
     }
 
     clock_t  time_stt;
@@ -58,15 +68,15 @@ int main()
     time_stt = clock();
     BiCGSTAB<SparseMatrix<double>> solver;
 
-    //需要设置最大迭代次数，大概在10w左右能迭代出来
+    //需要设置最大迭代次数
 	solver.setMaxIterations(1200000);
 	//solver.setTolerance(1e-2);
-    solver.compute(A);
+    solver.compute(a);
 
     if( solver.info()!=Success)
     {
         cout<<"Decomposition Failed!"<<endl;
-        return 1;
+        return;
     }
     double compute_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
     time_stt = clock();
@@ -80,18 +90,18 @@ int main()
     if( solver.info()!=Success)
     {
         cout<<"Solving Failed!"<<endl;
-        return 1;
+        return;
     }
 
     double solve_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
-    fout<<"BiCGSTAB for ACTIVSg10k Succeed!"<<endl;
+    fout<<"BiCGSTAB for " << A << " and " << B << " Solving Succeed!"<<endl;
     fout<<"Compute time: "<<compute_time<<" ms"<<endl;
     fout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
     
 
     // 计算残差向量的范数
-    VectorXd residual = (A*x)-(b);
+    VectorXd residual = (a*x)-(b);
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();
     double infinityNorm = residual.lpNorm<Eigen::Infinity>();
@@ -101,7 +111,7 @@ int main()
     fout<< "infinityNorm norm: " << infinityNorm << endl;
     fout<<"x:"<<x<<"\n"<<endl;
 
-    cout<<"BiCGSTAB for ACTIVSg10k Solving Succeed!"<<endl;
+    cout<<"BiCGSTAB for " << A << " and " << B << " Solving Succeed!"<<endl;
     cout<<"Compute time: "<<compute_time<<" ms"<<endl;
     cout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     cout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
@@ -110,5 +120,5 @@ int main()
     cout<< "infinityNorm norm: " << infinityNorm << endl;
 
     fout.close();
-    return 0;
+    return;
 }

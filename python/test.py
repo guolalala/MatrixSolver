@@ -1,0 +1,2 @@
+from Matrixsolver import nicslu
+nicslu.NICSLUSolve("D:/vscode project/MatrixSolver/datasets/add20.mtx", "D:/vscode project/MatrixSolver/datasets/add20_b.mtx", "D:/vscode project/MatrixSolver/logs/nicslu.log")

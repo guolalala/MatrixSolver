@@ -6,52 +6,61 @@
 #include "fstream"
 #include "algorithm"
 
+extern "C" __declspec(dllexport) void LSCGSolve(char* A, char* B, char* X);
+
 using namespace std;
 using namespace Eigen;
 
-int main()
+void LSCGSolve(char* A, char* B, char* X)
 {
-    //æ„é€ ç¨€ç–çŸ©é˜µ
-
-
-    //æ•°æ®é›†
-    ifstream fin("../datasets/ACTIVSg10k.mtx");
-    if(!fin)
+    //read matrix A
+    ifstream ain(A);
+    if (!ain)
     {
-        cout<<"File Read Failed!"<<endl;
-        return 1;
+        cout << "File A Read Failed!" << endl;
+        return;
     }
-    ofstream fout("../logs/LSCG_10k.log", ios::out | ios::trunc); //åœ¨æ–‡ä»¶ä¸å­˜åœ¨æ—¶åˆ›å»ºæ–°æ–‡ä»¶ï¼Œå¹¶åœ¨æ–‡ä»¶å·²å­˜åœ¨æ—¶æ¸…é™¤åŸæœ‰æ•°æ®å¹¶å†™å…¥æ–°æ•°æ®
-    if(!fout)
-    {
-        cout<<"File Open Failed!"<<endl;
-        return 1;
-    }
-
-    //ifstream fin("D:/ACTIVSg10K/ACTIVSg10K.mtx");
     int M, N, L;
-    while (fin.peek() == '%')
-        fin.ignore(2048, '\n');
-    fin >> M >> N >> L;
-    
-    SparseMatrix<double> A(M, N);
-    A.reserve(L);
+    while (ain.peek() == '%')
+        ain.ignore(2048, '\n');
+    ain >> M >> N >> L;
+
+    SparseMatrix<double> a(M, N);
+    a.reserve(L);
     vector<Triplet<double>> tripletlist;
     for (int i = 0; i < L; ++i) {
         int m, n;
         double data;
-        fin >> m >> n >> data;
+        ain >> m >> n >> data;
         tripletlist.push_back(Triplet<double>(m - 1, n - 1, data));// m - 1 and n - 1 to set index start from 0
     }
-    fin.close();
+    ain.close();
 
-    A.setFromTriplets(tripletlist.begin(), tripletlist.end());
-    A.makeCompressed();
+    a.setFromTriplets(tripletlist.begin(), tripletlist.end());
+    a.makeCompressed();
 
-    //æ„é€ å³ç«¯é¡¹
+    //read matrix B
+    ifstream bin(B);
+    if (!bin)
+    {
+        cout << "File B Read Failed!" << endl;
+        return;
+    }
+    while (bin.peek() == '%')
+        bin.ignore(2048, '\n');
+    bin >> M >> N;
+
     VectorXd b(M);
-    for(int i = 0; i < M; ++i) {
-        b(i) = i + 1;
+    for (int i = 0; i < M; ++i) {
+        bin >> b(i);
+    }
+    bin.close();
+
+    ofstream fout(X, ios::out | ios::trunc); //ÔÚÎÄ¼ş²»´æÔÚÊ±´´½¨ĞÂÎÄ¼ş£¬²¢ÔÚÎÄ¼şÒÑ´æÔÚÊ±Çå³ıÔ­ÓĞÊı¾İ²¢Ğ´ÈëĞÂÊı¾İ
+    if (!fout)
+    {
+        cout << "File X Open Failed!" << endl;
+        return;
     }
 
     clock_t  time_stt;
@@ -59,61 +68,55 @@ int main()
     time_stt = clock();
     LeastSquaresConjugateGradient<SparseMatrix<double>> solver;
 
-<<<<<<< HEAD
-    //ĞèÒªÉèÖÃ×î´óµü´ú´ÎÊı£¬´ó¸ÅÔÚ10w×óÓÒÄÜµü´ú³öÀ´
-=======
-    //éœ€è¦è®¾ç½®æœ€å¤§è¿­ä»£æ¬¡æ•°ï¼Œå¤§æ¦‚åœ¨10wå·¦å³èƒ½è¿­ä»£å‡ºæ¥
->>>>>>> a64f79f1e8e415db06fc1fee6e08fcc6d7666b46
-	solver.setMaxIterations(1200000);
-	//solver.setTolerance(1e-2);
-    solver.compute(A);
 
-    if( solver.info()!=Success)
+    solver.setMaxIterations(1200000);
+    solver.compute(a);
+
+    if (solver.info() != Success)
     {
-        cout<<"Decomposition Failed!"<<endl;
-        return 1;
+        cout << "Decomposition Failed!" << endl;
+        return;
     }
-    double compute_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
+    double compute_time = 1000 * (clock() - time_stt) / (double)CLOCKS_PER_SEC;
     time_stt = clock();
-    
+
     VectorXd x;
-    x= solver.solve(b);
+    x = solver.solve(b);
     fout << "#iterations:     " << solver.iterations() << endl;
-	fout << "estimated error: " << solver.error()      << endl;
-	cout << "#iterations:     " << solver.iterations() << endl;
-	cout << "estimated error: " << solver.error()      << endl;
-    if( solver.info()!=Success)
+    fout << "estimated error: " << solver.error() << endl;
+    cout << "#iterations:     " << solver.iterations() << endl;
+    cout << "estimated error: " << solver.error() << endl;
+    if (solver.info() != Success)
     {
-        cout<<"Solving Failed!"<<endl;
-        return 1;
+        cout << "Solving Failed!" << endl;
+        return;
     }
 
-    double solve_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
-    fout<<"LSCGSolver for ACTIVSg10k Succeed!"<<endl;
-    fout<<"Compute time: "<<compute_time<<" ms"<<endl;
-    fout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
-    fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
-    
+    double solve_time = 1000 * (clock() - time_stt) / (double)CLOCKS_PER_SEC;
+    fout << "LSCGSolver for " << A << " and " << B << " Solving Succeed!" << endl;
+    fout << "Compute time: " << compute_time << " ms" << endl;
+    fout << "Solve time: " << solve_time << " ms" << endl << endl;
+    fout << "Total time: " << compute_time + solve_time << " ms" << endl << endl;
 
-    // è®¡ç®—æ®‹å·®å‘é‡çš„èŒƒæ•°
-    VectorXd residual = (A*x)-(b);
+
+    VectorXd residual = (a * x) - (b);
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();
     double infinityNorm = residual.lpNorm<Eigen::Infinity>();
 
-    fout<< "l1Norm norm: " << l1Norm << endl;
-    fout<< "Euclidean norm: " << residualNorm << endl;
-    fout<< "infinityNorm norm: " << infinityNorm << endl;
-    fout<<"x:"<<x<<"\n"<<endl;
+    fout << "l1Norm norm: " << l1Norm << endl;
+    fout << "Euclidean norm: " << residualNorm << endl;
+    fout << "infinityNorm norm: " << infinityNorm << endl;
+    fout << "x:" << x << "\n" << endl;
 
-    cout<<"LSCGSolver for ACTIVSg10k Solving Succeed!"<<endl;
-    cout<<"Compute time: "<<compute_time<<" ms"<<endl;
-    cout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
-    cout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
-    cout<< "l1Norm norm: " << l1Norm << endl;
-    cout<< "Euclidean norm: " << residualNorm << endl;
-    cout<< "infinityNorm norm: " << infinityNorm << endl;
+    cout << "LSCGSolver for " << A << " and " << B << " Solving Succeed!" << endl;
+    cout << "Compute time: " << compute_time << " ms" << endl;
+    cout << "Solve time: " << solve_time << " ms" << endl << endl;
+    cout << "Total time: " << compute_time + solve_time << " ms" << endl << endl;
+    cout << "l1Norm norm: " << l1Norm << endl;
+    cout << "Euclidean norm: " << residualNorm << endl;
+    cout << "infinityNorm norm: " << infinityNorm << endl;
 
     fout.close();
-    return 0;
+    return;
 }

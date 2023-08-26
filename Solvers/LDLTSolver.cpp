@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <iostream>
 #include <Eigen/Eigen>
 #include <cmath>
@@ -6,26 +7,20 @@
 #include "fstream"
 #include "algorithm"
 
+extern "C" __declspec(dllexport) void LDLTSolve(char* A, char* B, char* X);
+
 using namespace std;
 using namespace Eigen;
 
-int main()
+
+void LDLTSolve(char* A, char* B,char* X)
 {
-    //构造稀疏矩阵
-
-
-    //数据集
-    ifstream fin("../datasets/ACTIVSg10k.mtx");
+    //read matrix A
+    ifstream fin(A);
     if(!fin)
     {
-        cout<<"File Read Failed!"<<endl;
-        return 1;
-    }
-    ofstream fout("../logs/LDLT_10k(T).log", ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
-    if(!fout)
-    {
-        cout<<"File Open Failed!"<<endl;
-        return 1;
+        cout<<"File A Read Failed!"<<endl;
+        return;
     }
 
     int M, N, L;
@@ -33,8 +28,8 @@ int main()
         fin.ignore(2048, '\n');
     fin >> M >> N >> L;
     
-    SparseMatrix<double> A(M, N);
-    A.reserve(L);
+    SparseMatrix<double> a(M, N);
+    a.reserve(L);
     vector<Triplet<double>> tripletlist;
     for (int i = 0; i < L; ++i) {
         int m, n;
@@ -44,28 +39,46 @@ int main()
     }
     fin.close();
 
-    A.setFromTriplets(tripletlist.begin(), tripletlist.end());
-    A.makeCompressed();
+    a.setFromTriplets(tripletlist.begin(), tripletlist.end());
+    a.makeCompressed();
 
-    //构造右端项
+    //read matrix B
+    ifstream bin(B);
+    if (!bin)
+    {
+        cout << "File B Read Failed!" << endl;
+        return;
+    }
+    while (bin.peek() == '%')
+        bin.ignore(2048, '\n');
+    bin >> M >> N;
     VectorXd b(M);
     for(int i = 0; i < M; ++i) {
-        b(i) = i + 1;
+        bin >> b(i);
     }
-    b = A.transpose()*b;
-    A = A.transpose()*A;
+    bin.close();
+
+    ofstream fout(X, ios::out | ios::trunc); //在文件不存在时创建新文件，并在文件已存在时清除原有数据并写入新数据
+    if (!fout)
+    {
+        cout << "File X Open Failed!" << endl;
+        return;
+    }
+
+    b = a.transpose()*b;
+    a = a.transpose()*a;
     
     clock_t  time_stt;
 
     //LDLT分解
     time_stt = clock();
     SimplicialLDLT<SparseMatrix<double>> solver;
-    solver.compute(A);
+    solver.compute(a);
 
     if(solver.info()!=Success)
     {
         cout<<"Decomposition Failed!"<<endl;
-        return 1;
+        return;
     }
     double compute_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
     time_stt = clock();
@@ -75,17 +88,17 @@ int main()
     if(solver.info()!=Success)
     {
         cout<<"Solving Failed!"<<endl;
-        return 1;
+        return;
     }
     
     double solve_time = 1000*(clock()-time_stt)/(double)CLOCKS_PER_SEC;
-    fout<<"LDLTSolver for ACTIVSg10k(T) Succeed!"<<endl;
+    fout<<"LDLTSolver for "<< A <<" and "<< B << " Solving Succeed!" << endl;
     fout<<"Compute time: "<<compute_time<<" ms"<<endl;
     fout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
 
     // 计算残差向量的范数
-    VectorXd residual = A*x-b;
+    VectorXd residual = a*x-b;
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();
     double infinityNorm = residual.lpNorm<Eigen::Infinity>();
@@ -96,7 +109,7 @@ int main()
 
     fout<<"x:"<<x<<"\n"<<endl;
 
-    cout<<"LDLTSolver for ACTIVSg10k(T) Succeed!"<<endl;
+    cout<<"LDLTSolver for "<< A <<" and "<< B <<" Solving Succeed!"<<endl;
     cout<<"Compute time: "<<compute_time<<" ms"<<endl;
     cout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     cout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
@@ -105,5 +118,5 @@ int main()
     cout<< "infinityNorm norm: " << infinityNorm << endl;
 
     fout.close();
-    return 0;
+    return;
 }
