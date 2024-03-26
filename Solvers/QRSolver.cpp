@@ -56,7 +56,7 @@ void QRSolve(char* A, char* B, char* X)
     }
     bin.close();
 
-    ofstream fout(X, ios::out | ios::trunc); //ÔÚÎÄ¼ş²»´æÔÚÊ±´´½¨ĞÂÎÄ¼ş£¬²¢ÔÚÎÄ¼şÒÑ´æÔÚÊ±Çå³ıÔ­ÓĞÊı¾İ²¢Ğ´ÈëĞÂÊı¾İ
+    ofstream fout(X, ios::out | ios::trunc); //åœ¨æ–‡ä»¶ä¸å­˜åœ¨æ—¶åˆ›å»ºæ–°æ–‡ä»¶ï¼Œå¹¶åœ¨æ–‡ä»¶å·²å­˜åœ¨æ—¶æ¸…é™¤åŸæœ‰æ•°æ®å¹¶å†™å…¥æ–°æ•°æ®
     if (!fout)
     {
         cout << "File X Open Failed!" << endl;
@@ -65,7 +65,7 @@ void QRSolve(char* A, char* B, char* X)
     
     clock_t  time_stt;
 
-    //QR·Ö½â
+    //QRåˆ†è§£
     time_stt = clock();
     SparseQR<SparseMatrix<double>,AMDOrdering<int>> solver;
     solver.compute(a);
@@ -92,7 +92,7 @@ void QRSolve(char* A, char* B, char* X)
     fout<<"Solve time: "<<solve_time<<" ms"<<endl<<endl;
     fout<<"Total time: "<<compute_time+solve_time<<" ms"<<endl<<endl;
 
-    // ¼ÆËã²Ğ²îÏòÁ¿µÄ·¶Êı
+    // è®¡ç®—æ®‹å·®å‘é‡çš„èŒƒæ•°
     VectorXd residual = a*x-b;
     double residualNorm = residual.norm();
     double l1Norm = residual.lpNorm<1>();

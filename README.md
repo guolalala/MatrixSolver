@@ -1,30 +1,30 @@
-# ËµÃ÷ÎÄµµ
+# è¯´æ˜Žæ–‡æ¡£
 
-MatrixSolver¿âÊÇÒ»¸öÔÚpythonÉÏÊ¹ÓÃµÄÓÃÓÚ½øÐÐ¸ß½×Ï¡Êè¾ØÕó¿ìËÙÇó½â¼ÓËÙµÄÒ»¸ö±¾µØ¿â¡£Ëü°üº¬ÁËÔ­±¾ÊÇc++µÄeigen¿âÖÐµÄÏ¡Êè¾ØÕóµÄ½â·¨£¬°üÀ¨Ö±½ÓÇó½âºÍ¼ä½ÓÇó½âµÈ£»»¹°üº¬ÁËNICSLUËã·¨£¬Ò»¸ö¸ßÐÔÄÜÇó½âÏ¡Êè¾ØÕóµÄ¿â£¬Ö÷ÒªÓ¦ÓÃ³¡¾°ÊÇ²¢ÁªµçÂ··ÂÕæ¡£
+MatrixSolveråº“æ˜¯ä¸€ä¸ªåœ¨pythonä¸Šä½¿ç”¨çš„ç”¨äºŽè¿›è¡Œé«˜é˜¶ç¨€ç–çŸ©é˜µå¿«é€Ÿæ±‚è§£åŠ é€Ÿçš„ä¸€ä¸ªæœ¬åœ°åº“ã€‚å®ƒåŒ…å«äº†åŽŸæœ¬æ˜¯c++çš„eigenåº“ä¸­çš„ç¨€ç–çŸ©é˜µçš„è§£æ³•ï¼ŒåŒ…æ‹¬ç›´æŽ¥æ±‚è§£å’Œé—´æŽ¥æ±‚è§£ç­‰ï¼›è¿˜åŒ…å«äº†NICSLUç®—æ³•ï¼Œä¸€ä¸ªé«˜æ€§èƒ½æ±‚è§£ç¨€ç–çŸ©é˜µçš„åº“ï¼Œä¸»è¦åº”ç”¨åœºæ™¯æ˜¯å¹¶è”ç”µè·¯ä»¿çœŸã€‚
 
-## »·¾³ÅäÖÃ
+## çŽ¯å¢ƒé…ç½®
 
-Í¨¹ýpip install£¬Ìí¼ÓMatrixSolver-0.0.1-py3-none-any.whlÈí¼þ°ü£¬¿ÉÒÔÊ¹ÓÃÏà¶ÔÂ·¾¶»òÕß¾ø¶ÔÂ·¾¶¡£
+é€šè¿‡pip installï¼Œæ·»åŠ MatrixSolver-0.0.1-py3-none-any.whlè½¯ä»¶åŒ…ï¼Œå¯ä»¥ä½¿ç”¨ç›¸å¯¹è·¯å¾„æˆ–è€…ç»å¯¹è·¯å¾„ã€‚
 
-ÒÔÏà¶ÔÂ·¾¶ÎªÀý£¬
+ä»¥ç›¸å¯¹è·¯å¾„ä¸ºä¾‹ï¼Œ
 
 ```sh
 pip install .\dist\MatrixSolver-0.0.1-py3-none-any.whl
 ```
 
-Èç¹û³öÏÖÕâÑùµÄÊä³ö½á¹û£¬ËµÃ÷»·¾³ÅäÖÃ³É¹¦¡£
+å¦‚æžœå‡ºçŽ°è¿™æ ·çš„è¾“å‡ºç»“æžœï¼Œè¯´æ˜ŽçŽ¯å¢ƒé…ç½®æˆåŠŸã€‚
 
 ```sh
 Installing collected packages: MatrixSolver
 Successfully installed MatrixSolver-0.0.1
 ```
 
-¿ÉÒÔÔÚpythonÒÑ°²×°µÄÈí¼þ°üÖÐ²éÕÒMatrixSolver£¬ÒÔÈ·±£ÅäÖÃ³É¹¦¡£
+å¯ä»¥åœ¨pythonå·²å®‰è£…çš„è½¯ä»¶åŒ…ä¸­æŸ¥æ‰¾MatrixSolverï¼Œä»¥ç¡®ä¿é…ç½®æˆåŠŸã€‚
 
-## Ä£¿é
+## æ¨¡å—
 
-MatrixSolver¿â°üº¬Á½¸öÄ£¿é£¬·Ö±ðÊÇeigenºÍnicslu£¬¶ÔÓ¦Á½Àà²»Í¬µÄ¾ØÕó½â·¨¡£
-Í¨¹ýÈçÏÂ´úÂë¿ÉÒÔÒýÈëÐèÒªÊ¹ÓÃµÄÄ£¿é
+MatrixSolveråº“åŒ…å«ä¸¤ä¸ªæ¨¡å—ï¼Œåˆ†åˆ«æ˜¯eigenå’Œnicsluï¼Œå¯¹åº”ä¸¤ç±»ä¸åŒçš„çŸ©é˜µè§£æ³•ã€‚
+é€šè¿‡å¦‚ä¸‹ä»£ç å¯ä»¥å¼•å…¥éœ€è¦ä½¿ç”¨çš„æ¨¡å—
 
 ```sh
 from Matrixsolver import eigen
@@ -33,7 +33,7 @@ from Matrixsolver import nicslu
 
 ## eigen
 
-eigenÄ£¿é°üº¬7¸öº¯Êý£¬¼´7ÖÖ²»Í¬µÄ¾ØÕó½â·¨
+eigenæ¨¡å—åŒ…å«7ä¸ªå‡½æ•°ï¼Œå³7ç§ä¸åŒçš„çŸ©é˜µè§£æ³•
 
 ```sh
 def LLTSolve(A, B, X)
@@ -45,15 +45,15 @@ def LSCGSolve(A, B, X)
 def BICGSolve(A, B, X)
 ```
 
-º¯ÊýµÄÈý¸ö²ÎÊý·Ö±ðÎª´æ·Å¾ØÕóAµÄmtxÀàÐÍÊý¾Ý¼¯ÎÄ¼þµÄµØÖ·£¬´æ·Å¾ØÕóBµÄmtxÀàÐÍÊý¾Ý¼¯ÎÄ¼þµÄµØÖ·£¬±£´æÔËËã½á¹ûµÄÎÄ¼þµØÖ·¡£
+å‡½æ•°çš„ä¸‰ä¸ªå‚æ•°åˆ†åˆ«ä¸ºå­˜æ”¾çŸ©é˜µAçš„mtxç±»åž‹æ•°æ®é›†æ–‡ä»¶çš„åœ°å€ï¼Œå­˜æ”¾çŸ©é˜µBçš„mtxç±»åž‹æ•°æ®é›†æ–‡ä»¶çš„åœ°å€ï¼Œä¿å­˜è¿ç®—ç»“æžœçš„æ–‡ä»¶åœ°å€ã€‚
 
-ÒÔLLTSolveº¯ÊýÎªÀý£¬
+ä»¥LLTSolveå‡½æ•°ä¸ºä¾‹ï¼Œ
 ```sh
 from Matrixsolver import eigen
 
 eigen.LLTSolve("add20.mtx", "add20_b.mtx", "LLT.log")
 ```
-º¯Êý°üº¬Á½²¿·ÖÊä³ö½á¹û£¬µÚÒ»²¿·ÖÄÚÈÝ»áÖ±½ÓÊä³öµ½¿ØÖÆÌ¨½çÃæÖÐ£¬°üÀ¨ÔËÐÐÊ±¼ä£¬¼ÆËãÎó²îµÈÄÚÈÝ£¬
+å‡½æ•°åŒ…å«ä¸¤éƒ¨åˆ†è¾“å‡ºç»“æžœï¼Œç¬¬ä¸€éƒ¨åˆ†å†…å®¹ä¼šç›´æŽ¥è¾“å‡ºåˆ°æŽ§åˆ¶å°ç•Œé¢ä¸­ï¼ŒåŒ…æ‹¬è¿è¡Œæ—¶é—´ï¼Œè®¡ç®—è¯¯å·®ç­‰å†…å®¹ï¼Œ
 
 ```sh
 LLTSolver for add20.mtx and add20_b.mtx Solving Succeed!
@@ -67,7 +67,7 @@ Euclidean norm: 1.60906e-24
 infinityNorm norm: 1.265e-24
 ```
 
-µÚ¶þ²¿·ÖÄÚÈÝ»áÊä³öµ½ËùÌá¹©µÄ±£´æÔËËã½á¹ûµÄÎÄ¼þÖÐ£¬³ýÁËÖ±½ÓÊä³öµÄ½á¹û£¬»¹°üÀ¨Çó³öµÄ½âµÄ¾ßÌåÊý¾Ý¡£
+ç¬¬äºŒéƒ¨åˆ†å†…å®¹ä¼šè¾“å‡ºåˆ°æ‰€æä¾›çš„ä¿å­˜è¿ç®—ç»“æžœçš„æ–‡ä»¶ä¸­ï¼Œé™¤äº†ç›´æŽ¥è¾“å‡ºçš„ç»“æžœï¼Œè¿˜åŒ…æ‹¬æ±‚å‡ºçš„è§£çš„å…·ä½“æ•°æ®ã€‚
 
 ```sh
 LLTSolver for add20.mtx and add20_b.mtx Solving Succeed!
@@ -85,24 +85,24 @@ x: -2.5915e-13
  8.06483e-13
 -8.15546e-12
  -2.5687e-14
- ¡­¡­
+ â€¦â€¦
  ```
 ## nicslu
 
-nicsluÄ£¿é°üº¬µÄº¯ÊýÎªNICSLUËã·¨
+nicsluæ¨¡å—åŒ…å«çš„å‡½æ•°ä¸ºNICSLUç®—æ³•
 
 ```sh
 def NICSLUSolve(A, B, X)
 ```
 
-º¯ÊýµÄÈý¸ö²ÎÊý·Ö±ðÎª´æ·Å¾ØÕóAµÄmtxÀàÐÍÊý¾Ý¼¯ÎÄ¼þµÄµØÖ·£¬´æ·Å¾ØÕóBµÄmtxÀàÐÍÊý¾Ý¼¯ÎÄ¼þµÄµØÖ·£¬±£´æÔËËã½á¹ûµÄÎÄ¼þµØÖ·¡£
+å‡½æ•°çš„ä¸‰ä¸ªå‚æ•°åˆ†åˆ«ä¸ºå­˜æ”¾çŸ©é˜µAçš„mtxç±»åž‹æ•°æ®é›†æ–‡ä»¶çš„åœ°å€ï¼Œå­˜æ”¾çŸ©é˜µBçš„mtxç±»åž‹æ•°æ®é›†æ–‡ä»¶çš„åœ°å€ï¼Œä¿å­˜è¿ç®—ç»“æžœçš„æ–‡ä»¶åœ°å€ã€‚
 
 ```sh
 from Matrixsolver import nicslu
 
 nicslu.NICSLUSolve("add20.mtx", "add20_b.mtx", "NICSLU.log")
 ```
-º¯Êý°üº¬Á½²¿·ÖÊä³ö½á¹û£¬µÚÒ»²¿·ÖÄÚÈÝ»áÖ±½ÓÊä³öµ½¿ØÖÆÌ¨½çÃæÖÐ£¬°üÀ¨ÔËÐÐÊ±¼ä£¬¼ÆËãÎó²îµÈÄÚÈÝ£¬
+å‡½æ•°åŒ…å«ä¸¤éƒ¨åˆ†è¾“å‡ºç»“æžœï¼Œç¬¬ä¸€éƒ¨åˆ†å†…å®¹ä¼šç›´æŽ¥è¾“å‡ºåˆ°æŽ§åˆ¶å°ç•Œé¢ä¸­ï¼ŒåŒ…æ‹¬è¿è¡Œæ—¶é—´ï¼Œè®¡ç®—è¯¯å·®ç­‰å†…å®¹ï¼Œ
 
 ```sh
 NICSLUSolver for add20.mtx and add20_b.mtx Solving Succeed!
@@ -113,7 +113,7 @@ solve time: 3.64e-05
 residual RMSE: 7.53259e-26
 ```
 
-µÚ¶þ²¿·ÖÄÚÈÝ»áÊä³öµ½ËùÌá¹©µÄ±£´æÔËËã½á¹ûµÄÎÄ¼þÖÐ£¬³ýÁËÖ±½ÓÊä³öµÄ½á¹û£¬»¹°üÀ¨Çó³öµÄ½âµÄ¾ßÌåÊý¾Ý¡£
+ç¬¬äºŒéƒ¨åˆ†å†…å®¹ä¼šè¾“å‡ºåˆ°æ‰€æä¾›çš„ä¿å­˜è¿ç®—ç»“æžœçš„æ–‡ä»¶ä¸­ï¼Œé™¤äº†ç›´æŽ¥è¾“å‡ºçš„ç»“æžœï¼Œè¿˜åŒ…æ‹¬æ±‚å‡ºçš„è§£çš„å…·ä½“æ•°æ®ã€‚
 
 ```sh
 NICSLUSolver for add20.mtx and add20_b.mtx Solving Succeed!
@@ -127,5 +127,5 @@ residual RMSE: 7.53259e-26
 4.52418e-13
 -3.90866e-12
 8.06483e-13
- ¡­¡­
+ â€¦â€¦
  ```

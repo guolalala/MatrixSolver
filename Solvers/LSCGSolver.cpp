@@ -56,7 +56,7 @@ void LSCGSolve(char* A, char* B, char* X)
     }
     bin.close();
 
-    ofstream fout(X, ios::out | ios::trunc); //ÔÚÎÄ¼ş²»´æÔÚÊ±´´½¨ĞÂÎÄ¼ş£¬²¢ÔÚÎÄ¼şÒÑ´æÔÚÊ±Çå³ıÔ­ÓĞÊı¾İ²¢Ğ´ÈëĞÂÊı¾İ
+    ofstream fout(X, ios::out | ios::trunc); //åœ¨æ–‡ä»¶ä¸å­˜åœ¨æ—¶åˆ›å»ºæ–°æ–‡ä»¶ï¼Œå¹¶åœ¨æ–‡ä»¶å·²å­˜åœ¨æ—¶æ¸…é™¤åŸæœ‰æ•°æ®å¹¶å†™å…¥æ–°æ•°æ®
     if (!fout)
     {
         cout << "File X Open Failed!" << endl;
