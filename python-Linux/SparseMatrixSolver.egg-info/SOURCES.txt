@@ -1,0 +1,15 @@
+README.md
+setup.py
+SparseMatrixSolver/OptimizedSolver.py
+SparseMatrixSolver/__init__.py
+SparseMatrixSolver/eigen.py
+SparseMatrixSolver/klu.py
+SparseMatrixSolver/libSolver.so
+SparseMatrixSolver/libeigen.so
+SparseMatrixSolver/libklu.so
+SparseMatrixSolver/libni_solver.so
+SparseMatrixSolver/nicslu.py
+SparseMatrixSolver.egg-info/PKG-INFO
+SparseMatrixSolver.egg-info/SOURCES.txt
+SparseMatrixSolver.egg-info/dependency_links.txt
+SparseMatrixSolver.egg-info/top_level.txt
