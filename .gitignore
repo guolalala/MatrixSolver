@@ -1,3 +1,7 @@
 *.exe
 *.o
 *.lib
+/test/
+/GLU_public-master/
+/Solvers/test.cpp
+/python-Linux/output_x.dat
