@@ -1,0 +1,28 @@
+ARCHITECTURE:
+    DEPTH: 10
+    NAME: GNNSolver
+    WIDTH: 128
+DATASET:
+    AUGMENTATIONS:
+    -   DEGREE: 14
+        NAME: ConjugateGradientAugmentation
+    TEST:
+        DIRECTORY: stand_small/stand_small_test
+        NUM_MATRICES: 1000
+    TRAIN:
+        DIRECTORY: stand_small/stand_small_train
+        NUM_MATRICES: 100000
+OPTIMIZER:
+    BATCH_SIZE: 16
+    EPOCHS: 50
+    LEARNING_RATE: 0.001
+    NAME: Adam
+    WEIGHT_DECAY: 0.0
+SCHEDULER:
+    GAMMA: 0.1
+    MILESTONES:
+    - 40
+    - 45
+    NAME: MultiStepLR
+TEST:
+    BATCH_SIZE: 16

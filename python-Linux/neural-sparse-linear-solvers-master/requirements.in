@@ -1,0 +1,12 @@
+numpy
+pyyaml
+pytorch-lightning
+scipy
+tensorboard
+torch
+torchmetrics
+torch-cluster
+torch-geometric
+torch-scatter
+torch-sparse
+torch-spline-conv
