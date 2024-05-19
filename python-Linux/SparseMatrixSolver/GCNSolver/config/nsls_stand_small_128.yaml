@@ -7,8 +7,8 @@ DATASET:
     -   DEGREE: 14
         NAME: ConjugateGradientAugmentation
     TEST:
-        DIRECTORY: stand_small/stand_small_test
-        NUM_MATRICES: 1000
+        DIRECTORY: /home/LAB/chenbd/project/MatrixSolver/python-Linux/SparseMatrixSolver/GCNSolver/stand_small_test
+        NUM_MATRICES: 1
     TRAIN:
         DIRECTORY: stand_small/stand_small_train
         NUM_MATRICES: 100000

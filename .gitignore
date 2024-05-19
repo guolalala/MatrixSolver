@@ -6,3 +6,4 @@
 /Solvers/test.cpp
 /python-Linux/output_x.dat
 /python-Linux/SparseMatrixSolver/Neuralsolver/stand_small_test/*.npz
+lightning_logs/

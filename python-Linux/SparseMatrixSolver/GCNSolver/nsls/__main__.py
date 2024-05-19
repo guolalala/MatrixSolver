@@ -7,6 +7,10 @@ import warnings
 import numpy as np
 import torch
 import pytorch_lightning as pl
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from nsls.config import Config
 from nsls.config_trainer import ConfigTrainer
@@ -174,7 +178,7 @@ class CLI:
         # 保存导出的模型
         traced_module.save(args.output_path)
 
-def nsls(config_path,checkpoint_path,outfile_path):
+def Solve(config_path,checkpoint_path,outfile_path):
     # 从配置文件加载配置信息
     config = Config(config_path)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -196,8 +200,12 @@ def nsls(config_path,checkpoint_path,outfile_path):
     )
     # 运行测试集并获取测试结果
     results = trainer.test(module, dataloaders=test_loader)
+    
+    dir_path = os.path.dirname(outfile_path)
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
     f = open(outfile_path, "w")
     print(results, file=f)
 if __name__ == "__main__":
-    ##nsls("python-Linux/neural-sparse-linear-solvers-master/config/nsls_stand_small_128.yaml","python-Linux/neural-sparse-linear-solvers-master/checkpoints/epoch=49-step=312499.ckpt","logs/nsls.log")
+    # nsls("./config/nsls_stand_small_128.yaml","./checkpoints/epoch=49-step=312499.ckpt","./logs/nsls.log")
     CLI()
