@@ -68,5 +68,41 @@ def BICGSolve(A, B=None, X=None):
         X = X.encode()
     eigen.BICGSolve(A,B,X)
 
+def JacobiSolve(A,B=None,X=None):
+    if A!=None:
+        A = A.encode()
+    if B!=None:
+        B = B.encode()
+    if X!=None:
+        X = X.encode()
+    eigen.JacobiSolve(A,B,X)
+
+def GaussSeidelSolve(A,B=None,X=None):
+    if A!=None:
+        A = A.encode()
+    if B!=None:
+        B = B.encode()
+    if X!=None:
+        X = X.encode()
+    eigen.GaussSeidelSolve(A,B,X)
+
+def NewtonSolve(A,B=None,X=None):
+    if A!=None:
+        A = A.encode()
+    if B!=None:
+        B = B.encode()
+    if X!=None:
+        X = X.encode()
+    eigen.NewtonSolve(A,B,X)
+
+def GaussSolve(A,B=None,X=None):
+    if A!=None:
+        A = A.encode()
+    if B!=None:
+        B = B.encode()
+    if X!=None:
+        X = X.encode()
+    eigen.GaussSolve(A,B,X)
+
 if __name__ == '__main__':
     LLTSolve("add20.mtx")

@@ -7,7 +7,7 @@ dll_path = os.path.join(module_path, "libSolver.so")
 optisolver=CDLL(dll_path)
 
 # Call the main_function
-def Solve(A,B=None,X=None):
+def OptimizedSolve(A,B=None,X=None):
     if A!=None:
         A = A.encode()
     if B!=None:
@@ -17,4 +17,4 @@ def Solve(A,B=None,X=None):
     optisolver.solve(A,B,X)
 
 if __name__ == '__main__':
-    Solve("../datasets/ACTIVSg10K.mtx", "../datasets/ACTIVSg10K_b.mtx", "../NICSLU.log")
+    OptimizedSolve("../datasets/ACTIVSg10K.mtx", "../datasets/ACTIVSg10K_b.mtx", "../NICSLU.log")
