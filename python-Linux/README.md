@@ -158,6 +158,26 @@ klu.KLUSolve("add20.mtx", "add20_b.mtx", "KLU.log")
 
 第二部分内容会输出到所提供的保存运算结果的文件中，包括求出的解的具体数据。
 
+## glu
+
+glu模块包含的函数为GLU算法
+
+```sh
+def GLUSolve(A, B, X)
+```
+
+
+函数的三个参数分别为存放矩阵A的mtx类型数据集文件的地址，存放矩阵B的mtx类型数据集文件的地址，保存运算结果的文件地址。
+
+```sh    
+from SparseMatrixSolver import glu
+
+glu.GLUSolve("add20.mtx", "add20_b.mtx", "GLU.log")
+```
+函数包含两部分输出结果，第一部分内容会直接输出到控制台界面中，包括运行时间，计算误差等内容，
+
+第二部分内容会输出到所提供的保存运算结果的文件中，包括求出的解的具体数据。
+
 ## OptimizedSolver
 
 OptimizedSolver模块包含的函数为加速求解算法
