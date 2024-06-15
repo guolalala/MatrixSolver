@@ -3,10 +3,11 @@ from SparseMatrixSolver import nicslu
 from SparseMatrixSolver import eigen
 from SparseMatrixSolver import OptimizedSolver
 from SparseMatrixSolver import klu
+from SparseMatrixSolver import glu
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Sparse Matrix Solver')
-    parser.add_argument('-s','--solver', type=str, choices=['LLTSolve', 'LDLTSolve', 'LUSolve', 'QRSolve', 'CGSolve', 'LSCGSolve', 'BICGSolve', 'JacobiSolve', 'GaussSeidelSolve', 'NewtonSolve', 'GaussSolve', 'KLUSolve', 'NICSLUSolve', 'OptimizedSolve'], default='optimizedsolve', help='Solver to use')
+    parser.add_argument('-s','--solver', type=str, choices=['LLTSolve', 'LDLTSolve', 'LUSolve', 'QRSolve', 'CGSolve', 'LSCGSolve', 'BICGSolve', 'JacobiSolve', 'GaussSeidelSolve', 'NewtonSolve', 'GaussSolve', 'KLUSolve', 'NICSLUSolve', 'OptimizedSolve','GLUSolve'], default='optimizedsolve', help='Solver to use')
     parser.add_argument('-m', '--matrix', type=str,default='./datasets/add20.mtx', help='Matrix in the form of a string')
     parser.add_argument('-b', '--b', type=str,default=None, help='Right-hand side vector in the form of a string')
     parser.add_argument('-o', '--output', type=str,default='./output_x.dat', help='Output file name')
@@ -20,7 +21,7 @@ if __name__ == '__main__':
     if args.solver.lower() == 'optimizedsolve':
         OptimizedSolver.OptimizedSolve(A,B,X)
 
-    elif args.solver.lower() == 'nicslu':
+    elif args.solver.lower() == 'nicslusolve':
         nicslu.NICSLUSolve(A,B,X)
 
     elif args.solver.lower() == 'klusolve':
@@ -50,7 +51,7 @@ if __name__ == '__main__':
     elif args.solver.lower() == 'jacobisolve':
         eigen.JacobiSolve(A,B,X)
 
-    elif args.solver.lower() == 'gaussseidalsolve':
+    elif args.solver.lower() == 'gaussseidelsolve':
         eigen.GaussSeidelSolve(A,B,X)
 
     elif args.solver.lower() == 'newtonsolve':
@@ -58,7 +59,10 @@ if __name__ == '__main__':
 
     elif args.solver.lower() == 'gausssolve':
         eigen.GaussSolve(A,B,X)
+    
+    elif args.solver.lower() == 'glusolve':
+        glu.GLUSolve(A,B,X)
 
     else:
         print("Invalid solver")
-        print("Available solvers: optimizedsolve, nicslu, klusolve, lltsolve, ldltsolve, lusolve, qrsolve, cgsolve, lscgsolve, bicgsolve, jacobisolve, gaussseidalsolve, newtonsolve, gausssolve")
+        print("Available solvers: 'LLTSolve', 'LDLTSolve', 'LUSolve', 'QRSolve', 'CGSolve', 'LSCGSolve', 'BICGSolve', 'JacobiSolve', 'GaussSeidelSolve', 'NewtonSolve', 'GaussSolve', 'KLUSolve', 'NICSLUSolve', 'GLUSolve', 'OptimizedSolve'")

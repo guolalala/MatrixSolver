@@ -3,9 +3,11 @@ setup.py
 SparseMatrixSolver/OptimizedSolver.py
 SparseMatrixSolver/__init__.py
 SparseMatrixSolver/eigen.py
+SparseMatrixSolver/glu.py
 SparseMatrixSolver/klu.py
 SparseMatrixSolver/libSolver.so
 SparseMatrixSolver/libeigen.so
+SparseMatrixSolver/libglu.so
 SparseMatrixSolver/libklu.so
 SparseMatrixSolver/libni_solver.so
 SparseMatrixSolver/nicslu.py
