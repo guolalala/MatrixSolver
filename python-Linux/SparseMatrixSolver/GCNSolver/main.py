@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import time
 
 from nsls.__main__ import Solve
 
@@ -14,5 +15,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    start_time = time.time()
     Solve(args.config, args.checkpoint, args.output)
+    end_time = time.time()
+    print("Total time: {} ms".format((end_time - start_time)*1000))
 

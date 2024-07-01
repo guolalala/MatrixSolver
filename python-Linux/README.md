@@ -32,6 +32,7 @@ from SparseMatrixSolver import nicslu
 from SparseMatrixSolver import eigen
 from SparseMatrixSolver import OptimizedSolver
 from SparseMatrixSolver import klu
+from SparseMatrixSolver import glu
 ```
 
 ## eigen
@@ -81,19 +82,10 @@ Euclidean norm: 1.60906e-24
 infinityNorm norm: 1.265e-24
 ```
 
-第二部分内容会输出到所提供的保存运算结果的文件中，除了直接输出的结果，还包括求出的解的具体数据。
+第二部分内容会输出到所提供的保存运算结果的文件中，包括求出的解的具体数据。
 
 ```sh
-LLTSolver for add20.mtx and add20_b.mtx Solving Succeed!
-Compute time: 292 ms
-Solve time: 12 ms
-
-Total time: 304 ms
-
-l1Norm norm: 5.04952e-24
-Euclidean norm: 1.60906e-24
-infinityNorm norm: 1.265e-24
-x: -2.5915e-13
+-2.5915e-13
  4.52418e-13
 -3.90866e-12
  8.06483e-13
